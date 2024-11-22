@@ -18,6 +18,7 @@ class _AuthscreenState extends State<Authscreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController phonenumberController = TextEditingController();
+  bool isObscure = true;
   String _selectedBloodType = 'A+';
   String _role = 'patient';
   bool _issignup = false;
@@ -118,7 +119,16 @@ class _AuthscreenState extends State<Authscreen> {
                         ),
                         const SizedBox(height: 10),
                         AppTextFormField(
-                          isObscureText: true,
+                          isObscureText: isObscure,
+                          suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isObscure = !isObscure;
+                                });
+                              },
+                              child: isObscure
+                                  ? Icon(Icons.visibility)
+                                  : Icon(Icons.visibility_off)),
                           labeltext: 'Password',
                           hintText: 'Password',
                           controller: passwordController,
@@ -198,10 +208,10 @@ class _AuthscreenState extends State<Authscreen> {
                             if (state is AuthFailure) {
                               showToast(message: state.errorMessage);
                             } else if (state is AuthSuccess) {
+                              Navigator.pushNamed(context, '/home');
                               _issignup
                                   ? showToast(message: 'SignUp successfully')
                                   : showToast(message: 'Login successfully');
-                              Navigator.pushNamed(context, '/home');
                             } else {
                               Text('jfbhbbjfdnmf');
                             }
@@ -251,8 +261,8 @@ class _AuthscreenState extends State<Authscreen> {
           },
         ),
         RadioListTile(
-          title: const Text('Donator'),
-          value: 'donator',
+          title: const Text('Donor'),
+          value: 'donor',
           groupValue: _role,
           onChanged: (value) {
             setState(() {

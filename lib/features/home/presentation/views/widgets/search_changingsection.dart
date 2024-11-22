@@ -6,23 +6,34 @@ class SearchAndChangingSection extends StatelessWidget {
   const SearchAndChangingSection({
     super.key,
     required this.searchController,
-    required this.buttontext,
   });
 
   final TextEditingController searchController;
-  final String buttontext;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AppTexttFormField(
-          hintText: 'Search for A donor',
-          controller: searchController,
-        ),
-        SizedBox(height: 15),
-        SearchAndChangableButton(buttontext: buttontext),
-      ],
+    final _formKey = GlobalKey<FormState>();
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          AppTexttFormField(
+            hintText: 'Search for A donor by BloodType',
+            controller: searchController,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter a blood type to search';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 15),
+          SearchAndChangableButton(
+            searchController: searchController,
+            formKey: _formKey,
+          ),
+        ],
+      ),
     );
   }
 }

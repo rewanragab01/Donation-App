@@ -12,35 +12,35 @@ class DonarRepository {
         _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
   // Get a list of donors
-  // Future<Map<String, dynamic>> getDonors() async {
-  //   QuerySnapshot querySnapshot = await _firebaseFirestore
-  //       .collection('users')
-  //       .where('role',
-  //           isEqualTo: 'donator') // Ensure you use the correct role name
-  //       .get();
-
-  //   Map<String, dynamic> donors = {};
-  //   for (var doc in querySnapshot.docs) {
-  //     donors[doc.id] = doc.data();
-  //   }
-
-  //   return donors;
-  // }
-  Stream<Map<String, dynamic>> streamDonors() {
-    return _firebaseFirestore
+  Future<Map<String, dynamic>> getDonors() async {
+    QuerySnapshot querySnapshot = await _firebaseFirestore
         .collection('users')
-        .where('role', isEqualTo: 'donator')
-        .snapshots()
-        .map((querySnapshot) {
-      Map<String, dynamic> donors = {};
-      for (var doc in querySnapshot.docs) {
-        donors[doc.id] = doc.data();
-      }
-      return donors;
-    });
+        .where('role', isEqualTo: 'donor')
+        .get();
+
+    Map<String, dynamic> donors = {};
+    for (var doc in querySnapshot.docs) {
+      donors[doc.id] = doc.data();
+    }
+
+    return donors;
   }
 
-  // Update the user's role from 'patient' to 'donor'
+  Future<Map<String, dynamic>> searchDonorsByBloodType(String bloodType) async {
+    QuerySnapshot querySnapshot = await _firebaseFirestore
+        .collection('users')
+        .where('role', isEqualTo: 'donor') // Filter by role
+        .where('bloodType', isEqualTo: bloodType) // Filter by blood type
+        .get();
+
+    Map<String, dynamic> donors = {};
+    for (var doc in querySnapshot.docs) {
+      donors[doc.id] = doc.data();
+    }
+
+    return donors;
+  }
+
   Future<void> updateUserRoleToDonor(String uid) async {
     // Reference to the user's document
     DocumentReference userDoc = _firebaseFirestore.collection('users').doc(uid);
@@ -67,4 +67,20 @@ class DonarRepository {
       'role': 'patient', // Update the role field
     });
   }
+
+// Stream<Map<String, dynamic>> streamDonors() {
+  //   return _firebaseFirestore
+  //       .collection('users')
+  //       .where('role', isEqualTo: 'donor')
+  //       .snapshots()
+  //       .map((querySnapshot) {
+  //     Map<String, dynamic> donors = {};
+  //     for (var doc in querySnapshot.docs) {
+  //       donors[doc.id] = doc.data();
+  //     }
+  //     return donors;
+  //   });
+  // }
+
+  // Update the user's role from 'patient' to 'donor'
 }

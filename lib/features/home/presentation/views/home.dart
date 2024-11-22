@@ -13,14 +13,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController searchController = TextEditingController();
-  String buttontext = 'be donor'; // Initial button text
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    context.read<UsersCubit>().streamDonors();
-  }
 
+  @override
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -48,20 +42,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: SearchAndChangingSection(
-                      searchController: searchController,
-                      buttontext: buttontext),
-                ),
-                SizedBox(height: 50),
-                const Text(
-                  'Recent Donors',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                    searchController: searchController,
                   ),
                 ),
+                SizedBox(height: 50),
+                BlocBuilder<UsersCubit, UsersState>(
+                  builder: (context, state) {
+                    String title = 'Recent Donors';
+                    if (state is DonorsSearchSuccess) {
+                      title = 'Search Results';
+                    }
+                    return Text(
+                      title,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 23,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 15),
-                // Using shrinkWrap for ListView
                 BlocBuilder<UsersCubit, UsersState>(
                   builder: (context, state) {
                     if (state is Donorsloading) {
@@ -69,16 +70,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CircularProgressIndicator(),
                       );
                     } else if (state is DonorsUserfetched) {
-                      final Map<String, dynamic> donors = state.donors;
+                      final donors = state.donors;
                       return DonorListView(donors: donors);
+                    } else if (state is DonorsSearchSuccess) {
+                      if (state.donors.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No Donor Match',
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        );
+                      } else {
+                        return DonorListView(donors: state.donors);
+                      }
                     } else if (state is DonorsFetchfailure) {
                       return Text(state.failuremessage);
                     } else {
-                      return Container(
-                        height: 50,
-                        width: 50,
-                        color: Colors.red,
-                      );
+                      return SizedBox();
                     }
                   },
                 )

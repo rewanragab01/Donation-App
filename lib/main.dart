@@ -1,4 +1,5 @@
-import 'package:donation/features/home/data/repos/donar_repo.dart';
+import 'package:donation/features/auth/presentation/views/authscreen.dart';
+import 'package:donation/features/home/data/repos/donor_repo.dart';
 import 'package:donation/features/home/presentation/viewmodels/cubit/users_cubit.dart';
 import 'package:donation/features/home/presentation/views/home.dart';
 import 'package:donation/features/splash/presentation/views/splashscreen.dart';
@@ -23,8 +24,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       routes: {
+        '/authscreen': (context) => Authscreen(),
         '/home': (context) => BlocProvider(
-            create: (context) => UsersCubit(DonarRepository()..streamDonors()),
+            create: (context) => UsersCubit(DonarRepository())..fetchdonors(),
             child: HomeScreen())
       },
     );

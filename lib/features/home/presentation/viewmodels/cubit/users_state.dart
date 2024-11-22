@@ -5,12 +5,12 @@ sealed class UsersState {}
 
 final class UsersInitial extends UsersState {}
 
+final class Donorsloading extends UsersState {}
+
 final class DonorsUserfetched extends UsersState {
   final Map<String, dynamic> donors;
   DonorsUserfetched({required this.donors});
 }
-
-final class Donorsloading extends UsersState {}
 
 final class DonorsFetchfailure extends UsersState {
   final String failuremessage;
@@ -21,9 +21,9 @@ final class UpdatedToDonor extends UsersState {}
 
 final class UpdatedToPatient extends UsersState {}
 
-final class UpdatedToDonorFailed extends UsersState {
+final class UpdatedRoleFailed extends UsersState {
   final String failedmessage;
-  UpdatedToDonorFailed({required this.failedmessage});
+  UpdatedRoleFailed({required this.failedmessage});
 }
 
 class RoleFetched extends UsersState {
@@ -36,7 +36,12 @@ class RoleFetchedFailed extends UsersState {
   RoleFetchedFailed({required this.failedemessage});
 }
 
-final class UpdatedToPatientFailed extends UsersState {
-  final String failedmessage;
-  UpdatedToPatientFailed({required this.failedmessage});
+class DonorsSearchSuccess extends UsersState {
+  final Map<String, dynamic> donors;
+  DonorsSearchSuccess({required this.donors});
+}
+
+class DonorsSearchFailure extends UsersState {
+  final String failuremessage;
+  DonorsSearchFailure({required this.failuremessage});
 }
